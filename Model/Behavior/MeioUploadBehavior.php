@@ -933,7 +933,10 @@ class MeioUploadBehavior extends ModelBehavior {
 			$params);
 
 		// Import phpThumb class
-		$test = App::import('Vendor','phpthumb', array('file' => 'phpThumb' . DS . 'phpthumb.class.php'));
+                $string = 'phpThumb' . DS . 'phpthumb.class.php';
+		if(! $test = App::import('Vendor','PhpThumb', array('file' => $string))) {
+                  //throw new Exception(debug($test));
+                }
 
 		// Configuring thumbnail settings
 		$phpThumb = new phpthumb;
@@ -970,10 +973,11 @@ class MeioUploadBehavior extends ModelBehavior {
 		// Creating thumbnail
 		if ($phpThumb->GenerateThumbnail()) {
 			if (!$phpThumb->RenderToFile($target)) {
-				$this->_addError('Could not render image to: ' . $target);
-			}
-		}
-	}
+                          throw new Exception('Could not render image to: ' . $target);
+                        }
+		}	
+        }
+        
 
 /**
  * Merges two arrays recursively
@@ -1106,11 +1110,12 @@ class MeioUploadBehavior extends ModelBehavior {
  * @access protected
  */
 	function _getThumbnailName($saveAs, $dir, $thumbDir, $key, $fieldToSaveAs, $sub = null) {
-		if ($key == 'normal') {
+          /*if ($key == 'normal') {
+                  throw new Exception('a;lskdjf;lsadkfj');
 			return $saveAs;
-		}
+                        }*/
 		// Otherwise, set the thumb filename to thumb.$key.$filename.$ext
-		$result = $dir . DS . $thumbDir . DS . $key . DS . $fieldToSaveAs;
+		$result = $dir . DS . $thumbDir . DS . $fieldToSaveAs;
 		if (isset($sub)) {
 			return $result . '.' . $sub;
 		}
